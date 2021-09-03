@@ -12,7 +12,7 @@ from typing import Any, Iterable, Optional, Set
 def get_representation(
         instance: Any,
         excluded: Optional[Set[str]] = None,
-        is_base_included: bool = True,
+        ancestor_private_attributes: bool = True,
 ) -> str:
     """
     Return the 'official' string representation of `instance`.
@@ -24,7 +24,7 @@ def get_representation(
     excluded : set, optional
         Names of arguments that are excluded
         from the representation.
-    is_base_included : bool, optional, default: True
+    ancestor_private_attributes : bool, optional, default: True
         If it is True, arguments of base class are included.
 
     Returns
@@ -34,18 +34,20 @@ def get_representation(
 
     """
     _class_name = instance.__class__.__name__
-    representation = [
-        f'{_class_name}(',
-    ]
+    representation = [f'{_class_name}(']
     for _key, _value in instance.__dict__.items():
         _key_repr, _value_repr = _key, _value
-        if is_base_included:
-            _parent_class = instance.__class__.__bases__[0]
-            while _parent_class.__name__ != 'object':
-                if _key.startswith(f'_{_parent_class.__name__}__'):
-                    _key_repr = _key[3 + len(_parent_class.__name__):]
-                    break
-                _parent_class = _parent_class.__bases__[0]
+        _ancestor = instance.__class__.__bases__[0]
+        while _ancestor.__name__ != 'object':
+            _prefix = f'_{_ancestor.__name__}__'
+            if _key.startswith(_prefix):
+                if ancestor_private_attributes:
+                    _key_repr = _key.removeprefix(_prefix)
+                else:
+                    _key_repr = ''
+            _ancestor = _ancestor.__bases__[0]
+        if _key_repr == '':
+            continue
         if _key.startswith(f'_{_class_name}__'):
             _key_repr = _key[3 + len(_class_name):]
         if excluded and _key_repr in excluded:
@@ -71,7 +73,7 @@ class RepresentableObject:
         """Return the 'official' string representation of instance."""
         return get_representation(
             self,
-            is_base_included=True,
+            ancestor_private_attributes=True,
             excluded=self.excluded_attributes_for_repr
         )
 
