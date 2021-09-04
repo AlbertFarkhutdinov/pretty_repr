@@ -6,6 +6,7 @@ from .main import get_representation, RepresentableObject
 
 class Parent(RepresentableObject):
     def __init__(self, attr_1, attr_2, default_1=1):
+        """Initialize self. See help(type(self)) for accurate signature."""
         self.attr_1 = attr_1
         self.attr_2 = attr_2
         self.default_1 = default_1
@@ -21,6 +22,7 @@ class Parent(RepresentableObject):
 
 class Child(Parent):
     def __init__(self, attr_3, attr_4, default_2=2, **kwargs):
+        """Initialize self. See help(type(self)) for accurate signature."""
         super().__init__(**kwargs)
         self.attr_3 = attr_3
         self.attr_4 = attr_4
@@ -37,6 +39,7 @@ class Child(Parent):
 
 class GrandChild(Child):
     def __init__(self, attr_5, attr_6, default_3=3, **kwargs):
+        """Initialize self. See help(type(self)) for accurate signature."""
         super().__init__(**kwargs)
         self.attr_5 = attr_5
         self.attr_6 = attr_6
@@ -59,6 +62,15 @@ class GrandChildExcluded(GrandChild):
         return {'attr_1', 'attr_4', 'attr_6'}
 
 
+class ClassWithIterableAttributes(RepresentableObject):
+
+    def __init__(self, attr_1, attr_2, attr_3):
+        """Initialize self. See help(type(self)) for accurate signature."""
+        self.attr_1 = attr_1
+        self.attr_2 = attr_2
+        self.attr_3 = attr_3
+
+
 class TestPrettyRepr:
 
     def setup(self):
@@ -74,6 +86,11 @@ class TestPrettyRepr:
         }
         self.grand_child = GrandChild(**_kwargs)
         self.grand_child_excluded = GrandChildExcluded(**_kwargs)
+        self.class_with_iterable_attributes = ClassWithIterableAttributes(
+            attr_1=(1, 2, 3),
+            attr_2=[4, 5, 6],
+            attr_3={1: 2, 3: 4, 5: 6}.items()
+        )
 
     def test_parent(self):
         _exp = 'Parent(attr_1=1, attr_2=2, default_1=1)'
@@ -153,13 +170,28 @@ class TestPrettyRepr:
         assert repr(self.grand_child) == _exp
 
     def test_grand_child_repr_with_excluded(self):
-        # TODO
         _exp = (
             'GrandChildExcluded(attr_2=2, default_1=1, '
             'attr_3=3, default_2=2, attr_5=5, default_3=3)'
         )
-        _got = get_representation(self.grand_child_excluded)
+        _got = repr(self.grand_child_excluded)
         assert _got == _exp
 
+    def test_class_with_iterable_attributes(self):
+        _exp = (
+            'ClassWithIterableAttributes(attr_1=(1, 2, 3), attr_2=[4, 5, 6], '
+            'attr_3=dict_items([(1, 2), (3, 4), (5, 6)]))'
+        )
+        _got = get_representation(
+            self.class_with_iterable_attributes,
+            is_only_tuples=False,
+        )
+        assert _got == _exp
 
-# pytest.main()
+    def test_class_with_iterable_attributes_as_tuples(self):
+        _exp = (
+            'ClassWithIterableAttributes(attr_1=(1, 2, 3), attr_2=(4, 5, 6), '
+            'attr_3=((1, 2), (3, 4), (5, 6)))'
+        )
+        _got = repr(self.class_with_iterable_attributes)
+        assert _got == _exp

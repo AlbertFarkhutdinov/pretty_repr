@@ -9,28 +9,39 @@ and informative `repr` method and base class with such method.
 from typing import Any, Iterable, Optional, Set
 
 
+def remove_private_prefix(attr_name: str, prefix: str) -> str:
+    """Return the specified attribute name without the specified prefix."""
+    return attr_name[len(prefix):]
+
+
 def get_representation(
         instance: Any,
         excluded: Optional[Set[str]] = None,
         ancestor_private_attributes: bool = True,
+        is_only_tuples: bool = True,
 ) -> str:
     """
-    Return the 'official' string representation of `instance`.
+    Return the 'official' string representation of the specified instance.
 
     Parameters
     ----------
     instance : Any
-        The instance, which representation is returned.
+        The instance, which string representation is returned.
     excluded : set, optional
         Names of arguments that are excluded
         from the representation.
     ancestor_private_attributes : bool, optional, default: True
-        If it is True, arguments of base class are included.
+        Private attributes of ancestor classes without '__' prefix
+        are included into string representation, if this parameter is True,
+        and are skipped if it is False.
+    is_only_tuples : bool, optional, default: True
+        Iterable attributes are represented as tuples,
+        if this parameter is True.
 
     Returns
     -------
     str
-        The 'official' string representation of `instance`.
+        The 'official' string representation of the specified instance.
 
     """
     _class_name = instance.__class__.__name__
@@ -42,17 +53,18 @@ def get_representation(
             _prefix = f'_{_ancestor.__name__}__'
             if _key.startswith(_prefix):
                 if ancestor_private_attributes:
-                    _key_repr = _key.removeprefix(_prefix)
+                    _key_repr = remove_private_prefix(_key, prefix=_prefix)
                 else:
                     _key_repr = ''
             _ancestor = _ancestor.__bases__[0]
         if _key_repr == '':
             continue
-        if _key.startswith(f'_{_class_name}__'):
-            _key_repr = _key[3 + len(_class_name):]
+        _prefix = f'_{_class_name}__'
+        if _key.startswith(_prefix):
+            _key_repr = remove_private_prefix(_key, prefix=_prefix)
         if excluded and _key_repr in excluded:
             continue
-        if isinstance(_value, Iterable):
+        if is_only_tuples and isinstance(_value, Iterable):
             _value_repr = tuple(_value)
         representation.append(f'{_key_repr}={_value_repr!r}')
         representation.append(', ')
@@ -64,16 +76,14 @@ def get_representation(
 
 
 class RepresentableObject:
-    """
-    Class with custom representation.
-
-    """
+    """Class with custom representation."""
 
     def __repr__(self) -> str:
         """Return the 'official' string representation of instance."""
         return get_representation(
             self,
             ancestor_private_attributes=True,
+            is_only_tuples=True,
             excluded=self.excluded_attributes_for_repr
         )
 
