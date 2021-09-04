@@ -28,11 +28,22 @@ pip install pretty-repr
 ```
 ## Using `pretty_repr`
 
-There are will be examples of how to use `pretty_repr`:
+There are will be examples of how to use `pretty_repr`.
+
+### `get_representation`
+
+To use the `get_representation` function, import it as shown below:
 
 ```
->>> 
+>>> from pretty_repr import get_representation
+```
 
+### `RepresentableObject`
+
+To use the `RepresentableObject` class, import it as shown below:
+
+```
+>>> from pretty_repr import RepresentableObject
 ```
 
 ## Contributing to `pretty_repr`
