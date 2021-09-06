@@ -3,7 +3,7 @@ import setuptools
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-requirements = ["pylint-af==1.0.1", "pytest==6.2.4"]
+requirements = ["pylint-af==1.0.1", "pytest==6.2.5"]
 
 setuptools.setup(
     name="pretty_repr",
