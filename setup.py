@@ -7,7 +7,7 @@ requirements = ["pylint-af==1.0.1", "pytest==6.2.5"]
 
 setuptools.setup(
     name="pretty_repr",
-    version="1.0.0",
+    version="1.0.1",
     author="Albert Farkhutdinov",
     author_email="albertfarhutdinov@gmail.com",
     description=(
@@ -20,7 +20,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     install_requires=requirements,
     classifiers=[
-        "Development Status :: 1 - Planning",
+        "Development Status :: 5 - Production/Stable",
         "Programming Language :: Python :: 3.9",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
