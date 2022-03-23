@@ -64,7 +64,11 @@ def get_representation(
             _key_repr = remove_private_prefix(_key, prefix=_prefix)
         if excluded and _key_repr in excluded:
             continue
-        if is_only_tuples and isinstance(_value, Iterable):
+        if (
+                is_only_tuples
+                and isinstance(_value, Iterable)
+                and not isinstance(_value, str)
+        ):
             _value_repr = tuple(_value)
         representation.append(f'{_key_repr}={_value_repr!r}')
         representation.append(', ')

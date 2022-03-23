@@ -7,7 +7,7 @@ requirements = ["pylint-af==1.0.1", "pytest==6.2.5"]
 
 setuptools.setup(
     name="pretty_repr",
-    version="1.0.1",
+    version="1.0.2",
     author="Albert Farkhutdinov",
     author_email="albertfarhutdinov@gmail.com",
     description=(

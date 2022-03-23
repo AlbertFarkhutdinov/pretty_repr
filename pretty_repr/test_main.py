@@ -64,11 +64,12 @@ class GrandChildExcluded(GrandChild):
 
 class ClassWithIterableAttributes(RepresentableObject):
 
-    def __init__(self, attr_1, attr_2, attr_3):
+    def __init__(self, attr_1, attr_2, attr_3, attr_4):
         """Initialize self. See help(type(self)) for accurate signature."""
         self.attr_1 = attr_1
         self.attr_2 = attr_2
         self.attr_3 = attr_3
+        self.attr_4 = attr_4
 
 
 class TestPrettyRepr:
@@ -89,7 +90,8 @@ class TestPrettyRepr:
         self.class_with_iterable_attributes = ClassWithIterableAttributes(
             attr_1=(1, 2, 3),
             attr_2=[4, 5, 6],
-            attr_3={1: 2, 3: 4, 5: 6}.items()
+            attr_3={1: 2, 3: 4, 5: 6}.items(),
+            attr_4='hello',
         )
 
     def test_parent(self):
@@ -180,7 +182,7 @@ class TestPrettyRepr:
     def test_class_with_iterable_attributes(self):
         _exp = (
             'ClassWithIterableAttributes(attr_1=(1, 2, 3), attr_2=[4, 5, 6], '
-            'attr_3=dict_items([(1, 2), (3, 4), (5, 6)]))'
+            f"attr_3=dict_items([(1, 2), (3, 4), (5, 6)]), attr_4='hello')"
         )
         _got = get_representation(
             self.class_with_iterable_attributes,
@@ -191,7 +193,7 @@ class TestPrettyRepr:
     def test_class_with_iterable_attributes_as_tuples(self):
         _exp = (
             'ClassWithIterableAttributes(attr_1=(1, 2, 3), attr_2=(4, 5, 6), '
-            'attr_3=((1, 2), (3, 4), (5, 6)))'
+            f"attr_3=((1, 2), (3, 4), (5, 6)), attr_4='hello')"
         )
         _got = repr(self.class_with_iterable_attributes)
         assert _got == _exp
