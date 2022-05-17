@@ -3,11 +3,11 @@ import setuptools
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-requirements = ["pytest==6.2.5"]
+requirements = ["pytest>6,<8"]
 
 setuptools.setup(
     name="pretty_repr",
-    version="1.0.3",
+    version="1.0.4",
     author="Albert Farkhutdinov",
     author_email="albertfarhutdinov@gmail.com",
     description=(
