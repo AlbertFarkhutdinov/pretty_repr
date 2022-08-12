@@ -56,21 +56,15 @@ A(a=1, b=2, _c=3, d=0)
 A(b=2, d=0)
 ```
 
-3. If a parameter is iterable is represented as tuple by default:
+3. If a parameter is iterable is represented in accordance to its `__repr__` method:
 ```
 >>> import numpy as np
 >>> example_2 = A((1, 2), [3, 4], {5, 6}, np.zeros(3))
 >>> print(get_representation(example_2))
-A(a=(1, 2), b=(3, 4), _c=(5, 6), d=(0.0, 0.0, 0.0))
-```
-
-4. Run the following to change this behaviour:
-```
->>> print(get_representation(example_2, is_only_tuples=False))
 A(a=(1, 2), b=[3, 4], _c={5, 6}, d=array([0., 0., 0.]))
 ```
 
-5. Inheritor representation includes all parameters of the ancestor 
+4. Inheritor representation includes all parameters of the ancestor 
 as well as its own parameters:
 
 ```
@@ -87,7 +81,7 @@ as well as its own parameters:
 B(a=1, b=2, _c=3, d=0, e=4, f=5, h=1)
 ```
 
-6. This representation includes private attributes of the ancestor.
+5. This representation includes private attributes of the ancestor.
 Run the following to exclude it from representation:
 ```
 >>> example_3._A__b
