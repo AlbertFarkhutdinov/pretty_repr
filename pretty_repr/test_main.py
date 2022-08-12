@@ -90,7 +90,7 @@ class TestPrettyRepr:
         self.class_with_iterable_attributes = ClassWithIterableAttributes(
             attr_1=(1, 2, 3),
             attr_2=[4, 5, 6],
-            attr_3={1: 2, 3: 4, 5: 6}.items(),
+            attr_3={1: 2, 3: 4, 5: 6},
             attr_4='hello',
         )
 
@@ -182,18 +182,7 @@ class TestPrettyRepr:
     def test_class_with_iterable_attributes(self):
         _exp = (
             'ClassWithIterableAttributes(attr_1=(1, 2, 3), attr_2=[4, 5, 6], '
-            f"attr_3=dict_items([(1, 2), (3, 4), (5, 6)]), attr_4='hello')"
-        )
-        _got = get_representation(
-            self.class_with_iterable_attributes,
-            is_only_tuples=False,
-        )
-        assert _got == _exp
-
-    def test_class_with_iterable_attributes_as_tuples(self):
-        _exp = (
-            'ClassWithIterableAttributes(attr_1=(1, 2, 3), attr_2=(4, 5, 6), '
-            f"attr_3=((1, 2), (3, 4), (5, 6)), attr_4='hello')"
+            f"attr_3={{1: 2, 3: 4, 5: 6}}, attr_4='hello')"
         )
         _got = repr(self.class_with_iterable_attributes)
         assert _got == _exp

@@ -6,7 +6,7 @@ and informative `repr` method and base class with such method.
 """
 
 
-from typing import Any, Iterable, Optional, Set
+from typing import Any, Optional, Set
 
 
 def remove_private_prefix(attr_name: str, prefix: str) -> str:
@@ -18,7 +18,6 @@ def get_representation(
         instance: Any,
         excluded: Optional[Set[str]] = None,
         ancestor_private_attributes: bool = True,
-        is_only_tuples: bool = True,
 ) -> str:
     """
     Return the 'official' string representation of the specified instance.
@@ -34,9 +33,6 @@ def get_representation(
         Private attributes of ancestor classes without '__' prefix
         are included into string representation, if this parameter is True,
         and are skipped if it is False.
-    is_only_tuples : bool, optional, default: True
-        Iterable attributes are represented as tuples,
-        if this parameter is True.
 
     Returns
     -------
@@ -47,7 +43,7 @@ def get_representation(
     _class_name = instance.__class__.__name__
     representation = [f'{_class_name}(']
     for _key, _value in instance.__dict__.items():
-        _key_repr, _value_repr = _key, _value
+        _key_repr, _value_repr = _key, repr(_value)
         _ancestor = instance.__class__.__bases__[0]
         while _ancestor.__name__ != 'object':
             _prefix = f'_{_ancestor.__name__}__'
@@ -64,13 +60,7 @@ def get_representation(
             _key_repr = remove_private_prefix(_key, prefix=_prefix)
         if excluded and _key_repr in excluded:
             continue
-        if (
-                is_only_tuples
-                and isinstance(_value, Iterable)
-                and not isinstance(_value, str)
-        ):
-            _value_repr = tuple(_value)
-        representation.append(f'{_key_repr}={_value_repr!r}')
+        representation.append(f'{_key_repr}={_value_repr}')
         representation.append(', ')
     if len(representation) > 1:
         representation.pop()
@@ -87,7 +77,6 @@ class RepresentableObject:
         return get_representation(
             self,
             ancestor_private_attributes=True,
-            is_only_tuples=True,
             excluded=self.excluded_attributes_for_repr
         )
 
