@@ -7,7 +7,7 @@ requirements = ["pytest>6,<8"]
 
 setuptools.setup(
     name="pretty_repr",
-    version="1.0.5",
+    version="1.0.6",
     author="Albert Farkhutdinov",
     author_email="albertfarhutdinov@gmail.com",
     description=(

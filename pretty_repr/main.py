@@ -42,6 +42,9 @@ def get_representation(
     """
     _class_name = instance.__class__.__name__
     representation = [f'{_class_name}(']
+    dict_attr = getattr(instance, '__dict__', None)
+    if dict_attr is None:
+        return repr(instance)
     for _key, _value in instance.__dict__.items():
         _key_repr, _value_repr = _key, repr(_value)
         _ancestor = instance.__class__.__bases__[0]
